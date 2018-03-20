@@ -375,6 +375,7 @@ extension Collection where Iterator.Element == GlucoseValue {
 
         let scheduledBasalRate = basalRates.value(at: date)
         var maxBasalRate = maxBasalRate
+        
 
         // TODO: Allow `highBasalThreshold` to be a configurable setting
         if case .aboveRange(min: let min, correcting: _, minTarget: let highBasalThreshold, units: _)? = correction,
