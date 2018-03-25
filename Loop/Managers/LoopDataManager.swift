@@ -608,21 +608,9 @@ final class LoopDataManager {
     private func checkAlerts() {
         
         NSLog("MB Custom alerts")
-        // Prediction differential alert
-        let retroGlucose = retrospectivePredictedGlucose?.last
-        let currentGlucose = glucoseStore.latestGlucose
+
         let unit = HKUnit.milligramsPerDeciliter()
-        if let retroVal = retroGlucose?.quantity.doubleValue(for: unit) {
-            if let currentVal = currentGlucose?.quantity.doubleValue(for: unit) {
-                if(abs(currentVal-retroVal) > 40) {
-                    //NSLog("MB Prediction error alert: %.0f", currentVal-retroVal)
-                    NotificationManager.sendForecastErrorNotification(quantity: currentVal-retroVal);
-                } else {
-                    //NSLog("MB Prediction error ok %.0f", currentVal-retroVal)
-                }
-                
-            }
-        }
+        
         
         // High and low alerts
         if let glucose = predictedGlucose {
@@ -653,9 +641,9 @@ final class LoopDataManager {
                 }
             }
             
-            // Bolus needed of at least 1 unit
+            // Bolus needed of at least 0.15 unit
             do {
-                let minAlertBolus : Double = 1.0;
+                let minAlertBolus : Double = 0.15;
                 let minTime : Double = 9 * 60 // sec;
                 let bolusAmount = try self.recommendBolus().amount
                 
