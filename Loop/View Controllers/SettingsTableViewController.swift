@@ -336,10 +336,6 @@ final class SettingsTableViewController: UITableViewController, DailyValueSchedu
                     let value = valueNumberFormatter.string(from: NSNumber(value: suspendThreshold.value)) ?? "-"
                     configCell.detailTextLabel?.text = String(format: NSLocalizedString("%1$@ %2$@", comment: "Format string for current suspend threshold. (1: value)(2: bg unit)"), value, suspendThreshold.unit.glucoseUnitDisplayString)
                 } else {
-                    
-                    
-                    
-                    
                     configCell.detailTextLabel?.text = TapToSetString
                 }
             case .bolusThreshold:
@@ -982,7 +978,6 @@ extension SettingsTableViewController: TextFieldTableViewControllerDelegate {
                 }
             case .configuration:
                 switch ConfigurationRow(rawValue: indexPath.row)! {
-                
                 case .suspendThreshold:
                     if let controller = controller as? GlucoseThresholdTableViewController,
                         let value = controller.value, let minBGGuard = valueNumberFormatter.number(from: value)?.doubleValue {
@@ -1015,8 +1010,6 @@ extension SettingsTableViewController: TextFieldTableViewControllerDelegate {
                 default:
                     assertionFailure()
                 }
-                
-                
             default:
                 assertionFailure()
             }
