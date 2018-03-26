@@ -116,6 +116,7 @@ final class SettingsTableViewController: UITableViewController, DailyValueSchedu
     fileprivate enum ConfigurationRow: Int, CaseCountable {
         case glucoseTargetRange = 0
         case suspendThreshold
+        case bolusThreshold
         case insulinModel
         case basalRate
         case carbRatio
@@ -335,6 +336,23 @@ final class SettingsTableViewController: UITableViewController, DailyValueSchedu
                     let value = valueNumberFormatter.string(from: NSNumber(value: suspendThreshold.value)) ?? "-"
                     configCell.detailTextLabel?.text = String(format: NSLocalizedString("%1$@ %2$@", comment: "Format string for current suspend threshold. (1: value)(2: bg unit)"), value, suspendThreshold.unit.glucoseUnitDisplayString)
                 } else {
+                    
+                    
+                    
+                    
+                    configCell.detailTextLabel?.text = TapToSetString
+                }
+            case .bolusThreshold:
+                configCell.textLabel?.text = NSLocalizedString("Bolus Threshold", comment: "The title text in settings")
+                
+                if let bolusThreshold = dataManager.loopManager.settings.bolusThreshold {
+                    let value = valueNumberFormatter.string(from: NSNumber(value: bolusThreshold.value)) ?? "-"
+                    configCell.detailTextLabel?.text = String(format: NSLocalizedString("%1$@ %2$@", comment: "Format string for current bolus threshold. (1: value)(2: bg unit)"), value, bolusThreshold.unit.glucoseUnitDisplayString)
+                } else {
+                    
+                    
+                    
+                    
                     configCell.detailTextLabel?.text = TapToSetString
                 }
             case .insulinModel:
@@ -615,6 +633,30 @@ final class SettingsTableViewController: UITableViewController, DailyValueSchedu
                 }
             case .insulinModel:
                 performSegue(withIdentifier: InsulinModelSettingsViewController.className, sender: sender)
+            
+            case .bolusThreshold:
+                
+                if let minBGGuard = dataManager.loopManager.settings.bolusThreshold {
+                    let vc = GlucoseThresholdTableViewController (threshold: minBGGuard.value, glucoseUnit: minBGGuard.unit)
+                    vc.delegate = self
+                    vc.indexPath = indexPath
+                    vc.title = sender?.textLabel?.text
+                    self.show(vc, sender: sender)
+                } else {
+                    dataManager.loopManager.glucoseStore.preferredUnit { (unit, error) -> Void in
+                        DispatchQueue.main.async {
+                            if let error = error {
+                                self.presentAlertController(with: error)
+                            } else if let unit = unit {
+                                let vc = GlucoseThresholdTableViewController (threshold: nil, glucoseUnit: unit)
+                                vc.delegate = self
+                                vc.indexPath = indexPath
+                                vc.title = sender?.textLabel?.text
+                                self.show(vc, sender: sender)
+                            }
+                        }
+                    }
+                }
             }
         case .devices:
             let vc = RileyLinkDeviceTableViewController()
@@ -940,6 +982,7 @@ extension SettingsTableViewController: TextFieldTableViewControllerDelegate {
                 }
             case .configuration:
                 switch ConfigurationRow(rawValue: indexPath.row)! {
+                
                 case .suspendThreshold:
                     if let controller = controller as? GlucoseThresholdTableViewController,
                         let value = controller.value, let minBGGuard = valueNumberFormatter.number(from: value)?.doubleValue {
@@ -947,6 +990,16 @@ extension SettingsTableViewController: TextFieldTableViewControllerDelegate {
                     } else {
                         dataManager.loopManager.settings.suspendThreshold = nil
                     }
+                    
+                case .bolusThreshold:
+                    if let controller = controller as? GlucoseThresholdTableViewController,
+                        let value = controller.value, let minBolusGuard = valueNumberFormatter.number(from: value)?.doubleValue {
+                        dataManager.loopManager.settings.bolusThreshold = BolusThreshold(unit: controller.glucoseUnit, value: minBolusGuard)
+                    } else {
+                        dataManager.loopManager.settings.bolusThreshold = nil
+                    }
+                    
+                    
                 case .maxBasal:
                     if let value = controller.value, let rate = valueNumberFormatter.number(from: value)?.doubleValue {
                         dataManager.loopManager.settings.maximumBasalRatePerHour = rate
@@ -962,6 +1015,8 @@ extension SettingsTableViewController: TextFieldTableViewControllerDelegate {
                 default:
                     assertionFailure()
                 }
+                
+                
             default:
                 assertionFailure()
             }

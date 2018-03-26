@@ -22,7 +22,7 @@ final class GlucoseThresholdTableViewController: TextFieldTableViewController {
         
         super.init(style: .grouped)
         
-        placeholder = NSLocalizedString("Enter suspend threshold", comment: "The placeholder text instructing users to enter a suspend treshold")
+        placeholder = NSLocalizedString("Enter suspend threshold", comment: "The placeholder text instructing users to enter a suspend threshold")
         keyboardType = .decimalPad
         contextHelp = NSLocalizedString("When current or forecasted glucose is below the suspend threshold, Loop will not recommend a bolus, and will always recommend a temporary basal rate of 0 units per hour.", comment: "Explanation of suspend threshold")
         
