@@ -8,4 +8,8 @@
 
 // Change this on first setup to your own unique organization identifier in
 // reverse-domain name syntax.
+<<<<<<< HEAD
 MAIN_APP_BUNDLE_IDENTIFIER = com.loopkit
+=======
+MAIN_APP_BUNDLE_IDENTIFIER = com.olivia8
+>>>>>>> parent of ccaed9e... dd
