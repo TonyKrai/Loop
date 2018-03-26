@@ -237,7 +237,7 @@
 		4FF4D1011E18375000846527 /* WatchContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF4D0FF1E18374700846527 /* WatchContext.swift */; };
 		540DED971E14C75F002B2491 /* EnliteSensorDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540DED961E14C75F002B2491 /* EnliteSensorDisplayable.swift */; };
 		6A47C878206890CA0078AF86 /* BolusThreshold.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A47C877206890CA0078AF86 /* BolusThreshold.swift */; };
-		6A47C87C2068C46A0078AF86 /* BolusThresholdTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A47C87B2068C46A0078AF86 /* BolusThresholdTableViewController.swift */; };
+		6A791F732069763100DAFE35 /* BolusThresholdTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A791F722069763100DAFE35 /* BolusThresholdTableViewController.swift */; };
 		7D7076351FE06EDE004AC8EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D7076371FE06EDE004AC8EA /* Localizable.strings */; };
 		7D70763A1FE06EDF004AC8EA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D70763C1FE06EDF004AC8EA /* InfoPlist.strings */; };
 		7D70763F1FE06EDF004AC8EA /* ckcomplication.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D7076411FE06EDF004AC8EA /* ckcomplication.strings */; };
@@ -596,7 +596,7 @@
 		4FF4D0FF1E18374700846527 /* WatchContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchContext.swift; sourceTree = "<group>"; };
 		540DED961E14C75F002B2491 /* EnliteSensorDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnliteSensorDisplayable.swift; sourceTree = "<group>"; };
 		6A47C877206890CA0078AF86 /* BolusThreshold.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BolusThreshold.swift; sourceTree = "<group>"; };
-		6A47C87B2068C46A0078AF86 /* BolusThresholdTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BolusThresholdTableViewController.swift; sourceTree = "<group>"; };
+		6A791F722069763100DAFE35 /* BolusThresholdTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BolusThresholdTableViewController.swift; sourceTree = "<group>"; };
 		7D68AAA91FE2DB0A00522C49 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		7D68AAAA1FE2DB0A00522C49 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		7D68AAAB1FE2DB0A00522C49 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MainInterface.strings; sourceTree = "<group>"; };
@@ -964,6 +964,7 @@
 			children = (
 				437CCADD1D2858FD0075D2C3 /* AuthenticationViewController.swift */,
 				43DBF04B1C93B8D700B3C386 /* BolusViewController.swift */,
+				6A791F722069763100DAFE35 /* BolusThresholdTableViewController.swift */,
 				43D2E8221F00425400AE5CBF /* BolusViewController+LoopDataManager.swift */,
 				43A51E1E1EB6D62A000736CC /* CarbAbsorptionViewController.swift */,
 				4315D2861CA5CC3B00589052 /* CarbEntryEditTableViewController.swift */,
@@ -971,7 +972,6 @@
 				43A51E201EB6DBDD000736CC /* ChartsTableViewController.swift */,
 				433EA4C31D9F71C800CD78FB /* CommandResponseViewController.swift */,
 				C178249F1E19CF9800D9D25C /* GlucoseThresholdTableViewController.swift */,
-				6A47C87B2068C46A0078AF86 /* BolusThresholdTableViewController.swift */,
 				4302F4E21D4EA54200F0FCAF /* InsulinDeliveryTableViewController.swift */,
 				435CB6221F37967800C320C7 /* InsulinModelSettingsViewController.swift */,
 				437D9BA21D7BC977007245E8 /* PredictionTableViewController.swift */,
@@ -1676,7 +1676,7 @@
 				438D42F91D7C88BC003244B0 /* PredictionInputEffect.swift in Sources */,
 				434F54611D28859B002A9274 /* ServiceCredential.swift in Sources */,
 				4F70C2101DE8FAC5006380B7 /* StatusExtensionDataManager.swift in Sources */,
-				6A47C87C2068C46A0078AF86 /* BolusThresholdTableViewController.swift in Sources */,
+				6A791F732069763100DAFE35 /* BolusThresholdTableViewController.swift in Sources */,
 				436FACEE1D0BA636004E2427 /* InsulinDataSource.swift in Sources */,
 				435CB6291F37B01300C320C7 /* InsulinModelSettings.swift in Sources */,
 				431A8C401EC6E8AB00823B9C /* CircleMaskView.swift in Sources */,
