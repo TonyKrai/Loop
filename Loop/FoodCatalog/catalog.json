@@ -164,4 +164,10 @@
         "absorption": "slow",
         "type": "measuredCup"
     },
+    "Polenta": {
+        "categories": ["Lunch"],
+        "portion": 40,
+        "ratio": 50,
+        "type": "measuredCup"
+    },
 }
