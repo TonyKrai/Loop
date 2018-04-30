@@ -243,6 +243,7 @@ struct FoodMetadata {
         case single
         case multiple
         case drink
+        case measuredCup
     }
     let type : FoodType
     let subtitle : String?
@@ -255,6 +256,7 @@ struct FoodMetadata {
         case "single": type = .single
         case "multiple": type = .multiple
         case "drink": type = .drink
+        case "measuredCup": type = .measuredCup
         default: type = .single
         }
         subtitle = raw["subtitle"] as? String

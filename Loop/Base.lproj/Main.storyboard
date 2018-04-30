@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="74s-IX-WF0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="74s-IX-WF0">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -644,7 +643,7 @@
                                     <outlet property="titleLabel" destination="k3F-Na-7mn" id="Mrt-ZL-fKG"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="BolusTableViewCell" rowHeight="65" id="LBl-nJ-mqA" customClass="TitleSubtitleTableViewCell" customModule="Loop" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="BolusTableViewCell" rowHeight="65" id="LBl-nJ-mqA" customClass="TitleSubtitleTableViewCell" customModule="Loop2" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="142" width="320" height="65"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LBl-nJ-mqA" id="BDK-of-xfl">
@@ -700,7 +699,7 @@
                                     <outlet property="titleLabel" destination="DkT-Mf-dYp" id="1ci-pK-P1g"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="DisconnectTableViewCell" rowHeight="70" id="h7f-Mj-fko" userLabel="DisconnectTableViewCell" customClass="TitleSubtitleTableViewCell" customModule="Loop" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="DisconnectTableViewCell" rowHeight="70" id="h7f-Mj-fko" userLabel="DisconnectTableViewCell" customClass="TitleSubtitleTableViewCell" customModule="Loop2" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="207" width="320" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="h7f-Mj-fko" id="ceL-3s-hR8">
@@ -767,7 +766,7 @@
                                     <outlet property="titleLabel" destination="d39-lL-jJw" id="Bwy-rb-ZXa"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="GlucoseTableViewCell" rowHeight="65" id="tvS-49-mgC" userLabel="GlucoseTableViewCell" customClass="TitleSubtitleTableViewCell" customModule="Loop" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="GlucoseTableViewCell" rowHeight="65" id="tvS-49-mgC" userLabel="GlucoseTableViewCell" customClass="TitleSubtitleTableViewCell" customModule="Loop2" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="277" width="320" height="65"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tvS-49-mgC" id="3xK-yg-KJk">
@@ -832,7 +831,7 @@
                                     <outlet property="titleLabel" destination="cEm-XP-e5p" id="NXU-71-9Yw"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="MealTableViewCell" rowHeight="120" id="5SG-DV-Qzm" userLabel="MealTableViewCell" customClass="MealTableViewCell" customModule="Loop" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="MealTableViewCell" rowHeight="120" id="5SG-DV-Qzm" userLabel="MealTableViewCell" customClass="MealTableViewCell" customModule="Loop2" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="342" width="320" height="120"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5SG-DV-Qzm" id="iyG-mW-DH4">
@@ -858,7 +857,7 @@
                                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     </collectionViewFlowLayout>
                                                     <cells>
-                                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="foodRecentImageCell" id="m3A-y0-d5e" customClass="FoodCollectionViewCell" customModule="Loop" customModuleProvider="target">
+                                                        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="foodRecentImageCell" id="m3A-y0-d5e" customClass="FoodCollectionViewCell" customModule="Loop2" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -1457,7 +1456,7 @@
         <!--QuickCarbEntry-->
         <scene sceneID="apZ-RX-HQC">
             <objects>
-                <tableViewController id="brJ-ce-jvo" userLabel="QuickCarbEntry" customClass="QuickCarbEntryViewController" customModule="Loop" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="brJ-ce-jvo" userLabel="QuickCarbEntry" customClass="QuickCarbEntryViewController" customModule="Loop2" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" id="rfE-nV-YdY">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1720,7 +1719,7 @@
         <!--Note-->
         <scene sceneID="kpp-8u-x11">
             <objects>
-                <tableViewController id="8E2-WU-GLA" customClass="NoteTableViewController" customModule="Loop" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="8E2-WU-GLA" customClass="NoteTableViewController" customModule="Loop2" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" id="7TC-ze-smZ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1820,7 +1819,7 @@
         <!--Pick Food-->
         <scene sceneID="IdZ-hp-8bR">
             <objects>
-                <viewController id="Ajn-ye-l3h" customClass="NewFoodPickerViewController" customModule="Loop" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Ajn-ye-l3h" customClass="NewFoodPickerViewController" customModule="Loop2" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="RmR-TF-L3Z"/>
                         <viewControllerLayoutGuide type="bottom" id="xAk-UJ-2vS"/>
@@ -1862,6 +1861,18 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="iGs-YC-Z73">
+                                        <rect key="frame" x="5" y="3" width="275" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="1/4 Cup"/>
+                                            <segment title="1/2 Cup"/>
+                                            <segment title="1 Cup"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="selectionValueChanged:" destination="Ajn-ye-l3h" eventType="valueChanged" id="XMc-5G-baz"/>
+                                        </connections>
+                                    </segmentedControl>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -1880,7 +1891,7 @@
                                     <constraint firstItem="I25-p2-Ku7" firstAttribute="centerY" secondItem="Yc0-IV-82q" secondAttribute="centerY" id="pCQ-0S-maf"/>
                                 </constraints>
                             </view>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cyQ-ZT-aO9" customClass="NewFoodPickerCollectionView" customModule="Loop" customModuleProvider="target">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cyQ-ZT-aO9" customClass="NewFoodPickerCollectionView" customModule="Loop2" customModuleProvider="target">
                                 <rect key="frame" x="16" y="139" width="288" height="429"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="0rf-fG-NQ3">
@@ -1890,7 +1901,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="foodImageCell" id="geV-Jf-o3G" customClass="FoodCollectionViewCell" customModule="Loop" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="foodImageCell" id="geV-Jf-o3G" customClass="FoodCollectionViewCell" customModule="Loop2" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="40" width="96" height="91"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -1937,12 +1948,12 @@
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
-                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="FoodCollectionReusableView" id="kIA-as-hOT" customClass="FoodCollectionReusableView" customModule="Loop" customModuleProvider="target">
+                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="FoodCollectionReusableView" id="kIA-as-hOT" customClass="FoodCollectionReusableView" customModule="Loop2" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="288" height="40"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Header" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WL3-XO-9HH">
-                                            <rect key="frame" x="8" y="11" width="322" height="21"/>
+                                            <rect key="frame" x="8" y="11" width="267" height="21"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -1986,6 +1997,7 @@
                     <connections>
                         <outlet property="collectionView" destination="cyQ-ZT-aO9" id="rBb-DV-xOs"/>
                         <outlet property="foodInfo" destination="0pG-wz-p20" id="PBZ-hG-Xg7"/>
+                        <outlet property="measuringCup" destination="iGs-YC-Z73" id="b6F-ya-auR"/>
                         <outlet property="saveButtonItem" destination="DeB-hG-gAk" id="QBD-fs-SG4"/>
                         <outlet property="selectionMultiplier" destination="bdq-zf-pGU" id="Qfm-ZQ-6Kl"/>
                         <outlet property="sliderInfo" destination="Yc0-IV-82q" id="rwa-tW-BR6"/>
@@ -1996,12 +2008,12 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U8Y-KD-qeX" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="fbk-yH-yif" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-414" y="1167"/>
+            <point key="canvasLocation" x="-414.375" y="1166.1971830985915"/>
         </scene>
         <!--Food Photo-->
         <scene sceneID="HmK-go-k67">
             <objects>
-                <viewController id="QvT-1r-fUW" customClass="FoodPickerCameraViewController" customModule="Loop" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="QvT-1r-fUW" customClass="FoodPickerCameraViewController" customModule="Loop2" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="58o-3E-ifD"/>
                         <viewControllerLayoutGuide type="bottom" id="Ssd-d0-fJx"/>

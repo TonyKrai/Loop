@@ -51,10 +51,12 @@ final class NewFoodPickerViewController: UIViewController, UICollectionViewDataS
     @IBOutlet weak var sliderMultiplier: UISlider!
     @IBOutlet weak var selectionMultiplier: UISegmentedControl!
     @IBOutlet weak var sliderInfo: UILabel!
+    @IBOutlet weak var measuringCup: UISegmentedControl!
     
     var foodManager : FoodManager? = nil
     private var selected : IndexPath? = nil
     private var ratio : Double = 0
+
     
     private var previewImage : UIImage? = nil
     private var previewFileName : String? = nil
@@ -187,6 +189,7 @@ final class NewFoodPickerViewController: UIViewController, UICollectionViewDataS
             sliderMultiplier.isEnabled = false
             sliderMultiplier.isHidden = true
             selectionMultiplier.isHidden = true
+            measuringCup.isHidden = true
             foodInfo.text = "Select food!"
             sliderInfo.text = ""
             saveButtonItem.isEnabled = false
@@ -197,7 +200,7 @@ final class NewFoodPickerViewController: UIViewController, UICollectionViewDataS
             let meta = foodManager.metaData(item)
             saveButtonItem.isEnabled = true
 
-            if let slider = sliderMultiplier, let selector = selectionMultiplier {
+            if let slider = sliderMultiplier, let selector = selectionMultiplier, let measuredCup = measuringCup {
                 slider.isEnabled = true
                 switch meta.type {
                 case .continuous:
@@ -206,23 +209,33 @@ final class NewFoodPickerViewController: UIViewController, UICollectionViewDataS
                     slider.setValue(Float(item.portionSize), animated: false)
                     slider.isHidden = false
                     selector.isHidden = true
+                    measuredCup.isHidden = true
                 case .drink:
                     slider.minimumValue = Float(item.portionSize / 4)
                     slider.maximumValue = max(Float(item.portionSize * 2), 500)
                     slider.setValue(Float(item.portionSize), animated: false)
                     slider.isHidden = false
                     selector.isHidden = true
+                    measuredCup.isHidden = true
                 case .multiple:
                     slider.minimumValue = 1
                     slider.maximumValue = 8
                     slider.setValue(Float(meta.initial), animated: false)
                     slider.isHidden = false
                     selector.isHidden = true
+                    measuredCup.isHidden = true
                     
                 case .single:
                     selector.selectedSegmentIndex = 2
                     slider.isHidden = true
                     selector.isHidden = false
+                    measuredCup.isHidden = true
+                    
+                case .measuredCup:
+                    measuredCup.selectedSegmentIndex = 1
+                    slider.isHidden = true
+                    selector.isHidden = true
+                    measuredCup.isHidden = false
                     
                 }
                 sliderValueChanged(slider)
@@ -279,11 +292,23 @@ final class NewFoodPickerViewController: UIViewController, UICollectionViewDataS
         let meta = foodManager.metaData(item)
         
         let selector = selectionMultiplier
+        let measuredCup = measuringCup
         
         var value = sender.value
         var total = 0.0
         var unit = "g"
         switch meta.type {
+            
+        case .measuredCup:
+            switch(measuredCup?.selectedSegmentIndex ?? 1) {
+            case 0: value = 0.50
+            case 1: value = 1
+            case 2: value = 2
+            default: value = 1
+            }
+            sliderInfo.text = ""
+            total = item.portionSize * Double(value)
+            ratio = Double(value)
             
         case .single:
             switch(selector?.selectedSegmentIndex ?? 2) {
