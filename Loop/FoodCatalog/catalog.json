@@ -91,13 +91,7 @@
         "type": "continuous"
     },
     
-    "Pasta": {
-        "categories": ["Lunch"],
-        "portion": 150,
-        "ratio": 29,
-        "absorption": "slow",
-        "type": "continuous"
-    },
+
     
     "Lasagne": {
         "categories": ["Lunch"],
@@ -160,14 +154,7 @@
         "type": "continuous"
     },
     
-    "Pizza Slice": {
-        "image": "Pizza",
-        "categories": ["Lunch"],
-        "portion": 107,
-        "ratio": 33,
-        "absorption": "slow",
-        "type": "multiple"
-    },
+
     
     "Kaiserschmarrn": {
         "image": "Kaiserschmarrn",
@@ -369,13 +356,7 @@
         "ratio": 100,
         "type": "continuous"
     },
-    
-    "Photo": {
-        "categories": ["Custom", "Popular"],
-        "portion": 20,
-        "ratio": 100,
-        "type": "continuous"
-    },
+  
     
     "Flat Bread": {
         "categories": ["Breakfast"],
@@ -384,6 +365,26 @@
         "ratio": 48,
         "type": "multiple"
     },
-
+    "Pizza Slice": {
+        "image": "Pizza",
+        "categories": ["Lunch"],
+        "portion": 107,
+        "ratio": 33,
+        "absorption": "slow",
+        "type": "multiple"
+    },
     
+    "Waffle": {
+        "categories": ["Breakfast"],
+        "portion": 10,
+        "ratio": 50,
+        "type": "multiple"
+    },
+    "Pasta": {
+        "categories": ["Lunch"],
+        "portion": 80,
+        "ratio": 25,
+        "absorption": "slow",
+        "type": "measuredCup"
+    },
 }
