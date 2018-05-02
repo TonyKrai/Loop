@@ -6,6 +6,7 @@
 //
 
 import LoopKit
+import RileyLinkBLEKit
 
 
 struct LoopSettings {
@@ -24,6 +25,12 @@ struct LoopSettings {
     var bolusThreshold: BolusThreshold? = nil
 
     var retrospectiveCorrectionEnabled = true
+}
+
+
+// MARK: - Static configuration
+extension LoopSettings {
+    static let idleListeningEnabledDefaults: RileyLinkDevice.IdleListeningState = .enabled(timeout: .minutes(4), channel: 0)
 }
 
 
