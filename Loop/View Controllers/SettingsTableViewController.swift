@@ -642,8 +642,19 @@ final class SettingsTableViewController: UITableViewController, DailyValueSchedu
         case .devices:
             let device = devices[indexPath.row]
 
-            show(vc, sender: sender)
-            
+            dataManager.getStateForDevice(device) { (deviceState, pumpState, pumpSettings, pumpOps) in
+                DispatchQueue.main.async {
+                    let vc = RileyLinkDeviceTableViewController(
+                        device: device,
+                        deviceState: deviceState,
+                        pumpSettings: pumpSettings,
+                        pumpState: pumpState,
+                        pumpOps: pumpOps
+                    )
+
+                    self.show(vc, sender: sender)
+                }
+            }
         case .loop:
             switch LoopRow(rawValue: indexPath.row)! {
             case .preferredInsulinDataSource:
