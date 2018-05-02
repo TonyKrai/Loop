@@ -36,6 +36,8 @@ class DexCGMManager: CGMManager {
         return shareManager?.sensorState
     }
 
+    var latestG5Reading: Glucose? { return nil }
+    
     var managedDataInterval: TimeInterval? {
         return shareManager?.managedDataInterval
     }
@@ -64,6 +66,8 @@ final class ShareClientManager: CGMManager {
     var sensorState: SensorDisplayable? {
         return latestBackfill
     }
+    
+    var latestG5Reading: Glucose? { return nil }
 
     let managedDataInterval: TimeInterval? = nil
 
@@ -81,7 +85,7 @@ final class ShareClientManager: CGMManager {
             return
         }
 
-        shareClient.fetchLast(6) { (error, glucose) in
+        shareClient.fetchLast(12) { (error, glucose) in
             if let error = error {
                 completion(.error(error))
                 return
@@ -150,6 +154,8 @@ final class G5CGMManager: DexCGMManager, TransmitterDelegate {
         }
     }
 
+    override var latestG5Reading: Glucose? { return latestReading }
+    
     override var managedDataInterval: TimeInterval? {
         if let transmitter = transmitter, transmitter.passiveModeEnabled {
             return .hours(3)
@@ -165,7 +171,6 @@ final class G5CGMManager: DexCGMManager, TransmitterDelegate {
             latestGlucose.readDate > Date(timeIntervalSinceNow: .minutes(-4.5)) else {
             return false
         }
-
         return true
     }
 
@@ -215,7 +220,6 @@ final class G5CGMManager: DexCGMManager, TransmitterDelegate {
             delegate?.cgmManager(self, didUpdateWith: .noData)
             return
         }
-
         latestReading = glucose
 
         guard glucose.state.hasReliableGlucose else {
@@ -228,7 +232,7 @@ final class G5CGMManager: DexCGMManager, TransmitterDelegate {
             delegate?.cgmManager(self, didUpdateWith: .noData)
             return
         }
-
+        
         self.delegate?.cgmManager(self, didUpdateWith: .newData([
             (quantity: quantity, date: glucose.readDate, isDisplayOnly: glucose.isDisplayOnly)
             ]))

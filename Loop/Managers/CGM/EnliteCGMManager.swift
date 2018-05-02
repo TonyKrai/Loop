@@ -11,7 +11,6 @@ import LoopUI
 import MinimedKit
 import RileyLinkKit
 
-
 final class EnliteCGMManager: CGMManager {
     let providesBLEHeartbeat = false
 
