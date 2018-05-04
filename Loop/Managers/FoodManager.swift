@@ -45,13 +45,13 @@ extension AbsorptionSpeed {
         let multiplier = UserDefaults.standard.absorptionTimeMultiplier
         switch(self) {
         case .ultraFast:
-                return round(multiplier * 45)
-        case .fast:
-                return round(multiplier * 60)
-        case .normal:
                 return round(multiplier * 90)
+        case .fast:
+                return round(multiplier * 120)
+        case .normal:
+                return round(multiplier * 156)
         case .slow:
-                return round(multiplier * 180)
+                return round(multiplier * 300)
         }
     }
     var seconds : Double {
