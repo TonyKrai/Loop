@@ -15,7 +15,7 @@ public enum FakeEventTypes: UInt8 {
     case siteChange = 0xfd
     case insulinChange = 0xfc
     case bgReceived = 0xfb
-    case debug = 0xfa
+    //case debug = 0xfa
 }
 
 final class PendingTreatmentsQueueManager: IdentifiableClass {
@@ -157,15 +157,15 @@ extension LoopDataManager {
         
         var treatment : NightscoutTreatment?
             switch(eventType) {
-            case .debug:
-                let cal = Calendar.current
-                let comps = cal.dateComponents([.year, .month, .day, .hour, .minute, .second, .nanosecond], from: date)
-                let microSeconds = lrint(Double(comps.nanosecond!)/1000)
+            //case .debug:
+                //let cal = Calendar.current
+                //let comps = cal.dateComponents([.year, .month, .day, .hour, .minute, .second, .nanosecond], from: date)
+                //let microSeconds = lrint(Double(comps.nanosecond!)/1000)
                 // This hack is here to prevent de-duplication of events on insert
                 // in Nightscout.  Everything else is logged much less per second, this might
                 // be logged more than once.
-                let formatted = String(format: "Debug.%06ld", microSeconds)
-                treatment = NightscoutTreatment(timestamp: date, enteredBy: author, notes:  "\(note) \(uid)", eventType: formatted)
+                //let formatted = String(format: "Debug.%06ld", microSeconds)
+               // treatment = NightscoutTreatment(timestamp: date, enteredBy: author, notes:  "\(note) \(uid)", eventType: formatted)
             case .note:
                 treatment = NoteNightscoutTreatment(timestamp: date, enteredBy: author, notes: "\(note) \(uid)")
             case .insulinChange:
@@ -237,12 +237,12 @@ extension LoopDataManager {
     
     public func addInternalNote(_ text: String) {
         NSLog("addInternalNote: \(text)")
-        addFakeEvent(.debug, "INTERNAL \(text)")
+        //addFakeEvent(.debug, "INTERNAL \(text)")
     }
     
     public func addDebugNote(_ text: String) {
         NSLog("addDebugNote: \(text)")
-        addFakeEvent(.debug, "DEBUG \(text)")
+        //addFakeEvent(.debug, "DEBUG \(text)")
     }
     
     public func addInsulinChange(_ text: String) {
