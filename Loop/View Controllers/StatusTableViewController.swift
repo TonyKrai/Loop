@@ -1510,7 +1510,7 @@ final class StatusTableViewController: ChartsTableViewController, MealTableViewC
                 settingsTouchTime = Date()
             }
             if sender.state == .ended, let duration = settingsTouchTime?.timeIntervalSinceNow  {
-                if abs(duration) > TimeInterval(2) {
+                if abs(duration) > TimeInterval(1) {
                     expertMode = !expertMode
                     deviceManager.loopManager.addInternalNote("toggleExpertMode \(expertMode)")
                     toolbarItems![8].isEnabled = expertMode
@@ -1522,7 +1522,7 @@ final class StatusTableViewController: ChartsTableViewController, MealTableViewC
                     }
                 } else {
                     if !expertMode {
-                        presentAlertController(withTitle: "Hint", message: "Press for 2 seconds to toggle expert mode.")
+                        presentAlertController(withTitle: "Hint", message: "Press for 1 seconds to toggle expert mode.")
                     } else {
                         // performSegue(withIdentifier: SettingsTableViewController.className, sender: nil)
                     }
