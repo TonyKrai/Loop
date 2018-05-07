@@ -1501,28 +1501,43 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ft8-sh-e1V">
-                                                    <rect key="frame" x="120" y="29" width="80.5" height="41"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ft8-sh-e1V">
+                                                    <rect key="frame" x="121" y="48" width="80.5" height="41"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Taz-5I-rkG">
-                                                    <rect key="frame" x="240.5" y="29" width="30" height="41"/>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Taz-5I-rkG">
+                                                    <rect key="frame" x="241" y="48" width="30" height="41"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                                    <state key="normal" title="+5"/>
+                                                    <state key="normal" title="+1"/>
                                                     <connections>
                                                         <action selector="incrementButton:" destination="brJ-ce-jvo" eventType="primaryActionTriggered" id="B2O-xm-jXg"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="64U-Xo-FXh">
-                                                    <rect key="frame" x="49.5" y="29.5" width="30" height="41"/>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="64U-Xo-FXh">
+                                                    <rect key="frame" x="50" y="48" width="30" height="41"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                                    <state key="normal" title="-5"/>
+                                                    <state key="normal" title="-1"/>
                                                     <connections>
                                                         <action selector="decrementButton:" destination="brJ-ce-jvo" eventType="primaryActionTriggered" id="5AT-ec-lih"/>
                                                     </connections>
                                                 </button>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="Xwv-8R-s6T">
+                                                    <rect key="frame" x="13" y="0.0" width="294" height="29"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <segments>
+                                                        <segment title="5 G"/>
+                                                        <segment title="10 G"/>
+                                                        <segment title="15 G"/>
+                                                        <segment title="20 G"/>
+                                                        <segment title="25 G"/>
+                                                        <segment title="30 G"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="carbentry:" destination="brJ-ce-jvo" eventType="valueChanged" id="1wL-ZZ-jdd"/>
+                                                    </connections>
+                                                </segmentedControl>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Taz-5I-rkG" firstAttribute="centerY" secondItem="aLJ-BR-seo" secondAttribute="centerY" id="MS7-TI-0ni"/>
@@ -1700,6 +1715,7 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
+                        <outlet property="CarbEntryButtons" destination="Xwv-8R-s6T" id="WuI-17-8Q2"/>
                         <outlet property="absorptionCell" destination="oD0-KJ-dd2" id="Lcf-a4-8Hk"/>
                         <outlet property="absorptionTimeControl" destination="dDJ-Mv-jMh" id="0l5-mW-2EX"/>
                         <outlet property="carbEntryLabel" destination="Lip-bq-b4t" id="BR3-gl-rUf"/>
@@ -1714,7 +1730,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Oto-cB-Sf8" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="rXe-lN-Ckx" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="3383" y="324"/>
+            <point key="canvasLocation" x="3382.5" y="323.23943661971833"/>
         </scene>
         <!--Note-->
         <scene sceneID="kpp-8u-x11">
