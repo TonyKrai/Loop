@@ -23,10 +23,13 @@ final class QuickCarbEntryViewController: UITableViewController, IdentifiableCla
     @IBOutlet weak var noteTextField: UITextField!
     
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var CarbEntryButtons: UISegmentedControl!
     
+  
+
     var carbStore: CarbStore?
     
-    // private var absorptionTime : Int = 180
+   // private var absorptionTime : Int = 180
     var carbs : CarbEntry? = nil
     var glucose : HKQuantity? = nil
     private var internalGlucose : Int = 0
@@ -172,14 +175,64 @@ final class QuickCarbEntryViewController: UITableViewController, IdentifiableCla
     @IBOutlet weak var carbLabel: UILabel!
     
     @IBAction func decrementButton(_ sender: Any) {
-        self.internalCarbs = max(0, self.internalCarbs - 5)
+        self.internalCarbs = max(0, self.internalCarbs - 1)
         updateCarbLabel()
     }
     
     @IBAction func incrementButton(_ sender: Any) {
-        self.internalCarbs = self.internalCarbs + 5
+        self.internalCarbs = self.internalCarbs + 1
         updateCarbLabel()
     }
+    
+
+    
+    @IBAction func ButtonCarbEntry(_ sender: Any) {
+        
+        
+    }
+    
+    @IBAction func carbentry(_ sender: Any) {
+        
+      if CarbEntryButtons.selectedSegmentIndex == 0
+      {
+        self.internalCarbs = self.internalCarbs - self.internalCarbs + 5
+        updateCarbLabel()
+        
+        }
+        else if CarbEntryButtons.selectedSegmentIndex == 1
+      {
+        self.internalCarbs = self.internalCarbs - self.internalCarbs + 10
+        updateCarbLabel()
+        
+        }
+      else if CarbEntryButtons.selectedSegmentIndex == 2
+      {
+        self.internalCarbs = self.internalCarbs - self.internalCarbs + 15
+        updateCarbLabel()
+        
+        }
+      else if CarbEntryButtons.selectedSegmentIndex == 3
+      {
+        self.internalCarbs = self.internalCarbs - self.internalCarbs + 20
+        updateCarbLabel()
+        
+        }
+      else if CarbEntryButtons.selectedSegmentIndex == 4
+      {
+        self.internalCarbs = self.internalCarbs - self.internalCarbs + 25
+        updateCarbLabel()
+        
+        }
+      else if CarbEntryButtons.selectedSegmentIndex == 5
+      {
+        self.internalCarbs = self.internalCarbs - self.internalCarbs + 30
+        updateCarbLabel()
+        
+        }
+     
+        
+    }
+ 
     
     @IBAction func saveButton(_ sender: Any) {
         if let mealCarbs = totalMealCarbs, internalCarbs > 0 {
