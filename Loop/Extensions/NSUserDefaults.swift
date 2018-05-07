@@ -435,7 +435,7 @@ extension UserDefaults {
             let value = double(forKey: PrivateKey.absorptionTimeMultiplier.rawValue)
             // default
             if value <= 0.0 {
-                return 0.8
+                return 1.0
             }
             return value
         }
