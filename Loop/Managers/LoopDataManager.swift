@@ -38,7 +38,8 @@ final class LoopDataManager {
 
     private let logger: CategoryLogger
     
-    var glucoseUpdated: Bool // flag used to decide if integral RC should be updated or not
+    fileprivate var glucoseUpdated: Bool // flag used to decide if integral RC should be updated or not
+    fileprivate var lastRetrospectiveCorrectionGlucose: GlucoseValue?
     var overallRetrospectiveCorrection: HKQuantity // value used to display overall RC effect to the user
     var integralRectrospectiveCorrectionIndicator: String // display integral RC status
 
@@ -60,6 +61,7 @@ final class LoopDataManager {
         self.lastTempBasal = lastTempBasal
         self.settings = settings
         self.glucoseUpdated = false
+        self.lastRetrospectiveCorrectionGlucose = nil
         self.overallRetrospectiveCorrection = HKQuantity(unit: HKUnit.milligramsPerDeciliter(), doubleValue: 0)
         self.integralRectrospectiveCorrectionIndicator = " "
 
@@ -262,7 +264,6 @@ final class LoopDataManager {
         glucoseStore.addGlucoseValues(values, device: device) { (success, values, error) in
             if success {
                 self.dataAccessQueue.async {
-                    self.glucoseUpdated = true // new glucose received, enable integral RC update
                     self.glucoseMomentumEffect = nil
                     self.lastGlucoseChange = nil
                     self.retrospectiveGlucoseChange = nil
@@ -909,6 +910,14 @@ final class LoopDataManager {
         }
         let currentCarbEffect = -change.start.quantity.doubleValue(for: glucoseUnit) + lastCarbOnlyGlucose.quantity.doubleValue(for: glucoseUnit)
         
+        // check if retrospective glucose correction has already been updated with this glucose change
+        if( lastRetrospectiveCorrectionGlucose?.endDate == change.end.endDate ) {
+            glucoseUpdated = false
+        } else {
+            lastRetrospectiveCorrectionGlucose = change.end
+            glucoseUpdated = true
+        }
+        
         // update overall retrospective correction
         let overallRC = RC.updateRetrospectiveCorrection(
             discrepancy: currentDiscrepancy,
@@ -967,7 +976,6 @@ final class LoopDataManager {
         NSLog("myLoop Overall retrospective correction: %f", overallRC)
         NSLog("myLoop Correction effect duration [min]: %f", effectMinutes)
         
-        glucoseUpdated = false // prevent further integral RC updates unless glucose has been updated
     }
 
     /// Measure the effects counteracting insulin observed in the CGM glucose.
