@@ -21,6 +21,8 @@ struct LoopSettings {
     var maximumBolus: Double?
 
     var suspendThreshold: GlucoseThreshold? = nil
+    
+    var bolusThreshold: BolusThreshold? = nil
 
     var retrospectiveCorrectionEnabled = true
 }
@@ -70,7 +72,9 @@ extension LoopSettings: RawRepresentable {
         if let rawThreshold = rawValue["minimumBGGuard"] as? GlucoseThreshold.RawValue {
             self.suspendThreshold = GlucoseThreshold(rawValue: rawThreshold)
         }
-
+        if let rawBolusThreshold = rawValue["minimumBolusGuard"] as? BolusThreshold.RawValue {
+            self.bolusThreshold = BolusThreshold(rawValue: rawBolusThreshold)
+        }
         if let retrospectiveCorrectionEnabled = rawValue["retrospectiveCorrectionEnabled"] as? Bool {
             self.retrospectiveCorrectionEnabled = retrospectiveCorrectionEnabled
         }
@@ -87,6 +91,7 @@ extension LoopSettings: RawRepresentable {
         raw["maximumBasalRatePerHour"] = maximumBasalRatePerHour
         raw["maximumBolus"] = maximumBolus
         raw["minimumBGGuard"] = suspendThreshold?.rawValue
+        raw["minimumBolusGuard"] = bolusThreshold?.rawValue
 
         return raw
     }
