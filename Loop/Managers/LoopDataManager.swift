@@ -792,7 +792,7 @@ final class LoopDataManager {
     fileprivate var recommendedTempBasal: (recommendation: TempBasalRecommendation, date: Date)?
 
     fileprivate var recommendedBolus: (recommendation: BolusRecommendation, date: Date)?
-    
+
     fileprivate var carbsOnBoard: CarbValue?
 
     fileprivate var lastTempBasal: DoseEntry?
@@ -1134,24 +1134,37 @@ final class LoopDataManager {
             throw LoopError.configurationError("Check settings")
         }
         
+       
+
+        guard let
+            insulinOnBoard = insulinOnBoard
+        else {
+            throw LoopError.missingDataError(details: "Insulin on Board not available (updatePredictedGlucoseAndRecommendedBasal)", recovery: "Pump data up to date?")
+        }
+
         guard lastRequestedBolus == nil
         else {
             // Don't recommend changes if a bolus was just requested.
             // Sending additional pump commands is not going to be
             // successful in any case.
+            NSLog("updatePredictedGlucoseAndRecommendedBasalAndBolus - previous Bolus still in progress")
             recommendedBolus = nil
             recommendedTempBasal = nil
+            return
         }
         
         let tempBasal = predictedGlucose.recommendedTempBasal(
-            to: glucoseTargetRange,
-            suspendThreshold: settings.suspendThreshold?.quantity,
-            sensitivity: insulinSensitivity,
-            model: model,
-            basalRates: basalRates,
-            maxBasalRate: maxBasal,
-            lastTempBasal: lastTempBasal
-        )
+                to: glucoseTargetRange,
+                suspendThreshold: settings.suspendThreshold?.quantity,
+                sensitivity: insulinSensitivity,
+                model: model,
+                basalRates: basalRates,
+                maxBasalRate: maxBasal,
+                insulinOnBoard: insulinOnBoard.value,
+                maxInsulinOnBoard: maximumInsulinOnBoard,
+                lastTempBasal: lastTempBasal,
+                lowerOnly: settings.bolusEnabled
+            )
         
         if let temp = tempBasal {
             recommendedTempBasal = (recommendation: temp, date: startDate)

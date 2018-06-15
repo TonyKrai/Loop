@@ -30,7 +30,10 @@ struct LoopSettings {
 
     var retrospectiveCorrectionEnabled = true
     
-      let absorptionTimeOverrun = 1.8
+    // Not configurable through UI, but might be nice.
+    let automatedBolusThreshold: Double = 0.2
+    let automatedBolusRatio: Double = 0.7
+    let automaticBolusInterval: TimeInterval = TimeInterval(minutes: 7)
 }
 
 

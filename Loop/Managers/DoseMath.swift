@@ -409,7 +409,7 @@ extension Collection where Iterator.Element == GlucoseValue {
         )
 
         let scheduledBasalRate = basalRates.value(at: date)
-        let maxBasalRate = maxBasalRate
+        var maxBasalRate = maxBasalRate
 
         // TODO: Allow `highBasalThreshold` to be a configurable setting
         // (dm61 commented out lines bellow to allow high temping below minTarget but above suspend threshold)
