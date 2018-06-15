@@ -411,6 +411,7 @@ final class DeviceDataManager {
                 return
             }
 
+
             ops.runSession(withName: "Fetch Pump History", using: device) { (session) in
                 do {
                     // TODO: This should isn't safe to access synchronously
@@ -530,17 +531,21 @@ final class DeviceDataManager {
     /// Send a bolus command and handle the result
     ///
     /// - parameter units:      The number of units to deliver
+    /// - parameter startDate:  The start of the bolus.
+    /// - parameter quiet:      Do not produce a notification of failure to the user.
     /// - parameter completion: A clsure called after the command is complete. This closure takes a single argument:
     ///     - error: An error describing why the command failed
-    func enactBolus(units: Double, at startDate: Date = Date(), completion: @escaping (_ error: Error?) -> Void) {
+    func enactBolus(units: Double, at startDate: Date = Date(), quiet : Bool = false, completion: @escaping (_ error: Error?) -> Void) {
+
         let notify = { (error: Error?) -> Void in
             if let error = error {
-                NotificationManager.sendBolusFailureNotification(for: error, units: units, at: startDate)
+                if !quiet {
+                    NotificationManager.sendBolusFailureNotification(for: error, units: units, at: startDate)
+                }
             }
-
             completion(error)
         }
-
+        
         guard units > 0 else {
             notify(nil)
             return
@@ -552,7 +557,18 @@ final class DeviceDataManager {
         }
 
         // If we don't have recent pump data, or the pump was recently rewound, read new pump data before bolusing.
-        let shouldReadReservoir = isReservoirDataOlderThan(timeIntervalSinceNow: .minutes(-6))
+        var shouldReadReservoir = isReservoirDataOlderThan(timeIntervalSinceNow: .minutes(-10))
+        if loopManager.doseStore.lastReservoirVolumeDrop < 0 {
+            notify(LoopError.invalidData(details: "Last Reservoir drop negative."))
+            shouldReadReservoir = true
+        } else if let reservoir = loopManager.doseStore.lastReservoirValue, reservoir.startDate.timeIntervalSinceNow <=
+            -loopManager.recencyInterval {
+            notify(LoopError.pumpDataTooOld(date: reservoir.startDate))
+            shouldReadReservoir = true
+        } else if loopManager.doseStore.lastReservoirValue == nil {
+            notify(LoopError.missingDataError(details: "Reservoir Value missing", recovery: "Keep phone close."))
+            shouldReadReservoir = true
+        }
 
         ops.runSession(withName: "Bolus", using: rileyLinkManager.firstConnectedDevice) { (session) in
             guard let session = session else {
@@ -561,6 +577,9 @@ final class DeviceDataManager {
             }
 
             if shouldReadReservoir {
+                // TODO it might be safer to return here and not give a Bolus
+                //      forcing the recalculation of recommendedBolus.  The new
+                //      data might have invalidated the old recommendation.
                 do {
                     let reservoir = try session.getRemainingInsulin()
 
@@ -904,6 +923,25 @@ extension DeviceDataManager: LoopDataManagerDelegate {
             } catch let error {
                 self.logger.addError("Post-basal time sync failed: \(error)", fromSource: "RileyLink")
             }
+        }
+    }
+    
+    func loopDataManager(_ manager: LoopDataManager, didRecommendBolus bolus: (recommendation: BolusRecommendation, date: Date), completion: @escaping (_ result: Result<DoseEntry>) -> Void) {
+        
+        enactBolus(units: bolus.recommendation.amount, quiet: true) { (error) in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                let now = Date()
+                completion(.success(DoseEntry(
+                    type: .bolus,
+                    startDate: now,
+                    endDate: now,
+                    value: bolus.recommendation.amount,
+                    unit: .units
+                )))
+            }
+            
         }
     }
 }

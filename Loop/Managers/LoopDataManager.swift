@@ -98,6 +98,7 @@ final class LoopDataManager {
             self.dataAccessQueue.async {
                 self.carbEffect = nil
                 self.carbsOnBoard = nil
+                self.lastCarbChange = Date()
                 self.notify(forChange: .carbs)
             }
         }
@@ -330,7 +331,9 @@ final class LoopDataManager {
     ///   - date: The date the bolus was requested
     func addRequestedBolus(units: Double, at date: Date, completion: (() -> Void)?) {
         dataAccessQueue.async {
-            self.lastRequestedBolus = (units: units, date: date)
+            NSLog("addRequestedBolus: \(units) \(date)")
+            self.recommendedBolus = nil
+            self.lastRequestedBolus = (units: units, date: date, reservoir: self.doseStore.lastReservoirValue)
             self.notify(forChange: .bolus)
 
             completion?()
@@ -343,12 +346,21 @@ final class LoopDataManager {
     ///   - units: The bolus amount, in units
     ///   - date: The date the bolus was enacted
     func addConfirmedBolus(units: Double, at date: Date, completion: (() -> Void)?) {
-        self.doseStore.addPendingPumpEvent(.enactedBolus(units: units, at: date)) {
+        let event = NewPumpEvent.enactedBolus(units: units, at: date)
+        NSLog("addConfirmedBolus: \(units) \(date)")
+        self.doseStore.addPendingPumpEvent(event) {
             self.dataAccessQueue.async {
                 self.lastRequestedBolus = nil
+                self.lastAutomaticBolus = date  // keep this as a date, irrespective of automatic or not
+                self.recommendedBolus = nil
                 self.insulinEffect = nil
-                self.notify(forChange: .bolus)
 
+                self.notify(forChange: .bolus)
+                do {
+                    try self.update()
+                } catch let error {
+                    NSLog("addConfirmedBolus: Update after confirmed bolus failed \(error)")
+                }
                 completion?()
             }
         }
@@ -438,11 +450,23 @@ final class LoopDataManager {
                         if let error = error {
                             self.logger.error(error)
                         } else {
-                            self.lastLoopCompleted = Date()
+                            if self.settings.bolusEnabled {
+                                // Have to do a bolus first.
+                                self.setAutomatedBolus { (error) -> Void in
+                                    if let error = error {
+                                        self.logger.error(error)
+                                    } else {
+                                        self.lastLoopCompleted = Date()
+                                    }
+                                }
+                            } else {
+                                // No automatic Bolus, we are done.
+                                self.lastLoopCompleted = Date()
+                            }
                         }
                         self.notify(forChange: .tempBasal)
                     }
-
+                    
                     // Delay the notification until we know the result of the temp basal
                     return
                 } else {
@@ -578,6 +602,25 @@ final class LoopDataManager {
                 updateGroup.leave()
             }
         }
+        
+        if insulinOnBoard == nil {
+            updateGroup.enter()
+            let now = Date()
+            doseStore.getInsulinOnBoardValues(start: retrospectiveStart, end: now) { (result) in
+                switch result {
+                case .success(let value):
+                    if let recentValue = value.closestPriorToDate(now) {
+                        self.insulinOnBoard = recentValue
+                    } else {
+                        self.insulinOnBoard = InsulinValue(startDate: now, value: 0.0)
+                    }
+                case .failure(let error):
+                    self.logger.error(error)
+                    self.insulinOnBoard = nil
+                }
+                updateGroup.leave()
+            }
+        }
 
         _ = updateGroup.wait(timeout: .distantFuture)
 
@@ -705,8 +748,16 @@ final class LoopDataManager {
     private var insulinEffect: [GlucoseEffect]? {
         didSet {
             predictedGlucose = nil
+            insulinOnBoard = nil
         }
     }
+    
+    fileprivate var insulinOnBoard: InsulinValue? {
+        didSet {
+            predictedGlucose = nil
+        }
+    }
+    
     private var glucoseMomentumEffect: [GlucoseEffect]? {
         didSet {
             predictedGlucose = nil
@@ -745,7 +796,9 @@ final class LoopDataManager {
     fileprivate var carbsOnBoard: CarbValue?
 
     fileprivate var lastTempBasal: DoseEntry?
-    fileprivate var lastRequestedBolus: (units: Double, date: Date)?
+
+    fileprivate var lastRequestedBolus: (units: Double, date: Date, reservoir: ReservoirValue?)?
+
     fileprivate var lastLoopCompleted: Date? {
         didSet {
             NotificationManager.scheduleLoopNotRunningNotifications()
@@ -1071,6 +1124,7 @@ final class LoopDataManager {
 
         guard let
             maxBasal = settings.maximumBasalRatePerHour,
+            let maximumInsulinOnBoard = settings.maximumInsulinOnBoard,
             let glucoseTargetRange = settings.glucoseTargetRangeSchedule,
             let insulinSensitivity = insulinSensitivitySchedule,
             let basalRates = basalRateSchedule,
@@ -1087,7 +1141,6 @@ final class LoopDataManager {
             // successful in any case.
             recommendedBolus = nil
             recommendedTempBasal = nil
-            return
         }
         
         let tempBasal = predictedGlucose.recommendedTempBasal(
@@ -1115,7 +1168,9 @@ final class LoopDataManager {
             sensitivity: insulinSensitivity,
             model: model,
             pendingInsulin: pendingInsulin,
-            maxBolus: maxBolus
+            maxBolus: maxBolus,
+            insulinOnBoard: insulinOnBoard.value,
+            maxInsulinOnBoard: maximumInsulinOnBoard
         )
         recommendedBolus = (recommendation: recommendation, date: startDate)
     }
@@ -1148,6 +1203,77 @@ final class LoopDataManager {
             }
         }
     }
+
+    // Keep track of last automatic bolus to space them out
+    private var lastAutomaticBolus : Date? = nil
+
+    // Keeps track of last carb change to prevent bolus immediately afterwards.
+    private var lastCarbChange : Date? = nil
+
+    /// *This method should only be called from the `dataAccessQueue`*
+    private func setAutomatedBolus(_ completion: @escaping (_ error: Error?) -> Void) {
+        dispatchPrecondition(condition: .onQueue(dataAccessQueue))
+
+        guard let recommendedBolus = self.recommendedBolus else {
+            completion(nil)
+            NSLog("setAutomatedBolus - recommendation not available")
+            return
+        }
+
+        let safeAmount = round(recommendedBolus.recommendation.amount * settings.automatedBolusRatio * 10) / 10
+        if safeAmount < settings.automatedBolusThreshold {
+            completion(nil)
+            NSLog("setAutomatedBolus - recommendation below threshold")
+            return
+        }
+
+        guard abs(recommendedBolus.date.timeIntervalSinceNow) < TimeInterval(minutes: 5) else {
+            completion(LoopError.recommendationExpired(date: recommendedBolus.date))
+            NSLog("setAutomatedBolus - recommendation too old")
+            return
+        }
+
+        if let lastAutomaticBolus = self.lastAutomaticBolus, abs(lastAutomaticBolus.timeIntervalSinceNow) < settings.automaticBolusInterval {
+            NSLog("setAutomatedBolus - last automatic bolus too close")
+            completion(nil)
+            return
+        }
+
+        if let carbChange = lastCarbChange {
+            guard abs(carbChange.timeIntervalSinceNow) > TimeInterval(minutes: 2) else {
+                NSLog("setAutomatedBolus - last carbchange too close")
+                completion(nil)
+                return
+            }
+        }
+
+        // TODO lastRequestedBolus might not ever get cleared, thus we need to check for the date here.
+        if lastRequestedBolus != nil {
+            NSLog("setAutomatedBolus - lastRequestedBolus still in progress \(String(describing: lastRequestedBolus))")
+            completion(nil)
+            return
+        }
+
+        // Copy bolus with "safe" ratio
+        let automatedBolus = (recommendation: BolusRecommendation(amount: safeAmount , pendingInsulin:  recommendedBolus.recommendation.pendingInsulin, notice: recommendedBolus.recommendation.notice ), date: recommendedBolus.date)
+        self.recommendedBolus = nil
+        lastAutomaticBolus = Date()
+
+        delegate.loopDataManager(self, didRecommendBolus: automatedBolus) { (result) in
+            self.dataAccessQueue.async {
+                switch result {
+                case .success(let bolus):
+                    NSLog("setAutomatedBolus - success: \(bolus)")
+                    self.recommendedBolus = nil
+                    completion(nil)
+                case .failure(let error):
+                    completion(error)
+                }
+            }
+        }
+    }
+
+    
 }
 
 
@@ -1156,6 +1282,8 @@ protocol LoopState {
     /// The last-calculated carbs on board
     var carbsOnBoard: CarbValue? { get }
 
+    var insulinOnBoard: InsulinValue? { get }
+    
     /// An error in the current state of the loop, or one that happened during the last attempt to loop.
     var error: Error? { get }
 
@@ -1203,6 +1331,11 @@ extension LoopDataManager {
         var carbsOnBoard: CarbValue? {
             dispatchPrecondition(condition: .onQueue(loopDataManager.dataAccessQueue))
             return loopDataManager.carbsOnBoard
+        }
+        
+        var insulinOnBoard: InsulinValue? {
+            dispatchPrecondition(condition: .onQueue(loopDataManager.dataAccessQueue))
+            return loopDataManager.insulinOnBoard
         }
 
         var error: Error? {
@@ -1286,6 +1419,7 @@ extension LoopDataManager {
                 "## LoopDataManager",
                 "settings: \(String(reflecting: manager.settings))",
                 "insulinCounteractionEffects: \(String(reflecting: manager.insulinCounteractionEffects))",
+                "insulinOnBoard: \(String(describing: state.insulinOnBoard))",
                 "predictedGlucose: \(state.predictedGlucose ?? [])",
                 "retrospectivePredictedGlucose: \(state.retrospectivePredictedGlucose ?? [])",
                 "recommendedTempBasal: \(String(describing: state.recommendedTempBasal))",
@@ -1297,45 +1431,24 @@ extension LoopDataManager {
                 "lastTempBasal: \(String(describing: state.lastTempBasal))",
                 "carbsOnBoard: \(String(describing: state.carbsOnBoard))"
             ]
-            var loopError = state.error
-            
-            // TODO: this should be moved to doseStore.generateDiagnosticReport
-            self.doseStore.insulinOnBoard(at: Date()) { (result) in
 
-                let insulinOnBoard: InsulinValue?
-                
-                switch result {
-                case .success(let value):
-                    insulinOnBoard = value
-                case .failure(let error):
-                    insulinOnBoard = nil
-                    
-                    if loopError == nil {
-                        loopError = error
-                    }
-                }
-                
-                entries.append("insulinOnBoard: \(String(describing: insulinOnBoard))")
-                entries.append("error: \(String(describing: loopError))")
+            self.glucoseStore.generateDiagnosticReport { (report) in
+                entries.append(report)
                 entries.append("")
 
-                self.glucoseStore.generateDiagnosticReport { (report) in
+                self.carbStore.generateDiagnosticReport { (report) in
                     entries.append(report)
                     entries.append("")
 
-                    self.carbStore.generateDiagnosticReport { (report) in
+                    self.doseStore.generateDiagnosticReport { (report) in
                         entries.append(report)
                         entries.append("")
 
-                        self.doseStore.generateDiagnosticReport { (report) in
-                            entries.append(report)
-                            entries.append("")
-
-                            completion(entries.joined(separator: "\n"))
-                        }
+                        completion(entries.joined(separator: "\n"))
                     }
                 }
             }
+            
         }
     }
 }
@@ -1358,4 +1471,13 @@ protocol LoopDataManagerDelegate: class {
     ///   - completion: A closure called once on completion
     ///   - result: The enacted basal
     func loopDataManager(_ manager: LoopDataManager, didRecommendBasalChange basal: (recommendation: TempBasalRecommendation, date: Date), completion: @escaping (_ result: Result<DoseEntry>) -> Void) -> Void
+    
+    /// Informs the delegate that an immediate bolus is recommended
+    ///
+    /// - Parameters:
+    ///   - manager: The manager
+    ///   - bolus: The recommended bolus
+    ///   - completion: A closure called once on completion
+    ///   - result: The enacted bolus
+    func loopDataManager(_ manager: LoopDataManager, didRecommendBolus bolus: (recommendation: BolusRecommendation, date: Date), completion: @escaping (_ result: Result<DoseEntry>) -> Void) -> Void
 }

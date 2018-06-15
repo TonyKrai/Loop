@@ -173,9 +173,11 @@ extension UserDefaults {
 
                 let settings = LoopSettings(
                     dosingEnabled: bool(forKey: "com.loudnate.Naterade.DosingEnabled"),
+                    bolusEnabled: false,
                     glucoseTargetRangeSchedule: glucoseTargetRangeSchedule,
                     maximumBasalRatePerHour: maximumBasalRatePerHour,
                     maximumBolus: maximumBolus,
+                    maximumInsulinOnBoard: nil,
                     suspendThreshold: suspendThreshold,
                     bolusThreshold: bolusThreshold,
                     retrospectiveCorrectionEnabled: bool(forKey: "com.loudnate.Loop.RetrospectiveCorrectionEnabled")

@@ -39,15 +39,20 @@ extension InsulinCorrection {
     /// - Parameters:
     ///   - scheduledBasalRate: The scheduled basal rate at the time the correction is delivered
     ///   - maxBasalRate: The maximum allowed basal rate
+    ///   - insulinOnBoard: The current insulin on board
+    ///   - maxInsulinOnBoard: The maximum insulin allowed
     ///   - duration: The duration of the temporary basal
     ///   - minimumProgrammableIncrementPerUnit: The smallest fraction of a unit supported in basal delivery
     /// - Returns: A temp basal recommendation
     fileprivate func asTempBasal(
         scheduledBasalRate: Double,
         maxBasalRate: Double,
+        insulinOnBoard: Double,
+        maxInsulinOnBoard: Double,
         duration: TimeInterval,
         minimumProgrammableIncrementPerUnit: Double
     ) -> TempBasalRecommendation {
+        let units = Swift.min(self.units, Swift.max(0, maxInsulinOnBoard - insulinOnBoard))
         var rate = units / (duration / TimeInterval(hours: 1))  // units/hour
         switch self {
         case .aboveRange, .inRange, .entirelyBelowRange:
@@ -85,15 +90,20 @@ extension InsulinCorrection {
     /// - Parameters:
     ///   - pendingInsulin: The number of units expected to be delivered, but not yet reflected in the correction
     ///   - maxBolus: The maximum allowable bolus value in units
+    ///   - insulinOnBoard: The current insulin on board
+    ///   - maxInsulinOnBoard: The maximum insulin allowed
     ///   - minimumProgrammableIncrementPerUnit: The smallest fraction of a unit supported in bolus delivery
     /// - Returns: A bolus recommendation
     fileprivate func asBolus(
         pendingInsulin: Double,
         maxBolus: Double,
+        insulinOnBoard: Double,
+        maxInsulinOnBoard: Double,
         minimumProgrammableIncrementPerUnit: Double
     ) -> BolusRecommendation {
-        var units = self.units - pendingInsulin
-        units = Swift.min(maxBolus, Swift.max(0, units))
+        let netUnits = self.units - pendingInsulin
+        var units = Swift.min(maxBolus, Swift.max(0, netUnits))
+        units = Swift.min(units, Swift.max(0, maxInsulinOnBoard - insulinOnBoard))
         units = round(units * minimumProgrammableIncrementPerUnit) / minimumProgrammableIncrementPerUnit
 
         return BolusRecommendation(
@@ -364,7 +374,10 @@ extension Collection where Iterator.Element == GlucoseValue {
     ///   - model: The insulin absorption model
     ///   - basalRates: The schedule of basal rates
     ///   - maxBasalRate: The maximum allowed basal rate
+    ///   - insulinOnBoard: The current insulin on board
+    ///   - maxInsulinOnBoard: The maximum insulin allowed
     ///   - lastTempBasal: The previously set temp basal
+    ///   - lowerOnly: Only return lower basal rates, never higher
     ///   - duration: The duration of the temporary basal
     ///   - minimumProgrammableIncrementPerUnit: The smallest fraction of a unit supported in basal delivery
     ///   - continuationInterval: The duration of time before an ongoing temp basal should be continued with a new command
@@ -377,7 +390,10 @@ extension Collection where Iterator.Element == GlucoseValue {
         model: InsulinModel,
         basalRates: BasalRateSchedule,
         maxBasalRate: Double,
+        insulinOnBoard: Double,
+        maxInsulinOnBoard: Double,
         lastTempBasal: DoseEntry?,
+        lowerOnly: Bool = false,
         duration: TimeInterval = .minutes(30),
         minimumProgrammableIncrementPerUnit: Double = 40,
         continuationInterval: TimeInterval = .minutes(11)
@@ -403,9 +419,15 @@ extension Collection where Iterator.Element == GlucoseValue {
         //    maxBasalRate = scheduledBasalRate
         //}
 
+        if lowerOnly {
+            maxBasalRate = scheduledBasalRate
+        }
+
         let temp = correction?.asTempBasal(
             scheduledBasalRate: scheduledBasalRate,
             maxBasalRate: maxBasalRate,
+            insulinOnBoard: insulinOnBoard,
+            maxInsulinOnBoard: maxInsulinOnBoard,
             duration: duration,
             minimumProgrammableIncrementPerUnit: minimumProgrammableIncrementPerUnit
         )
@@ -428,6 +450,8 @@ extension Collection where Iterator.Element == GlucoseValue {
     ///   - model: The insulin absorption model
     ///   - pendingInsulin: The number of units expected to be delivered, but not yet reflected in the correction
     ///   - maxBolus: The maximum bolus to return
+    ///   - insulinOnBoard: The current insulin on board
+    ///   - maxInsulinOnBoard: The maximum insulin allowed
     ///   - minimumProgrammableIncrementPerUnit: The smallest fraction of a unit supported in bolus delivery
     /// - Returns: A bolus recommendation
     func recommendedBolus(
@@ -439,6 +463,8 @@ extension Collection where Iterator.Element == GlucoseValue {
         model: InsulinModel,
         pendingInsulin: Double,
         maxBolus: Double,
+        insulinOnBoard: Double,
+        maxInsulinOnBoard: Double,
         minimumProgrammableIncrementPerUnit: Double = 40
     ) -> BolusRecommendation {
         guard let correction = self.insulinCorrection(
@@ -456,6 +482,8 @@ extension Collection where Iterator.Element == GlucoseValue {
         var bolus = correction.asBolus(
             pendingInsulin: pendingInsulin,
             maxBolus: maxBolus,
+            insulinOnBoard: insulinOnBoard,
+            maxInsulinOnBoard: maxInsulinOnBoard,
             minimumProgrammableIncrementPerUnit: minimumProgrammableIncrementPerUnit
         )
 

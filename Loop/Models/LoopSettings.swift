@@ -12,6 +12,8 @@ import RileyLinkBLEKit
 struct LoopSettings {
     var dosingEnabled = false
 
+    var bolusEnabled = false
+    
     let dynamicCarbAbsorptionEnabled = true
 
     var glucoseTargetRangeSchedule: GlucoseRangeSchedule?
@@ -19,6 +21,8 @@ struct LoopSettings {
     var maximumBasalRatePerHour: Double?
 
     var maximumBolus: Double?
+    
+    var maximumInsulinOnBoard: Double?
 
     var suspendThreshold: GlucoseThreshold? = nil
     
@@ -62,6 +66,10 @@ extension LoopSettings: RawRepresentable {
         if let dosingEnabled = rawValue["dosingEnabled"] as? Bool {
             self.dosingEnabled = dosingEnabled
         }
+        
+        if let bolusEnabled = rawValue["bolusEnabled"] as? Bool {
+            self.bolusEnabled = bolusEnabled
+        }
 
         if let rawValue = rawValue["glucoseTargetRangeSchedule"] as? GlucoseRangeSchedule.RawValue {
             self.glucoseTargetRangeSchedule = GlucoseRangeSchedule(rawValue: rawValue)
@@ -69,6 +77,7 @@ extension LoopSettings: RawRepresentable {
 
         self.maximumBasalRatePerHour = rawValue["maximumBasalRatePerHour"] as? Double
 
+        self.maximumInsulinOnBoard = rawValue["maximumInsulinOnBoard"] as? Double
         self.maximumBolus = rawValue["maximumBolus"] as? Double
 
         if let rawThreshold = rawValue["minimumBGGuard"] as? GlucoseThreshold.RawValue {
@@ -86,11 +95,13 @@ extension LoopSettings: RawRepresentable {
         var raw: RawValue = [
             "version": LoopSettings.version,
             "dosingEnabled": dosingEnabled,
+            "bolusEnabled": bolusEnabled,
             "retrospectiveCorrectionEnabled": retrospectiveCorrectionEnabled
         ]
 
         raw["glucoseTargetRangeSchedule"] = glucoseTargetRangeSchedule?.rawValue
         raw["maximumBasalRatePerHour"] = maximumBasalRatePerHour
+        raw["maximumInsulinOnBoard"] = maximumInsulinOnBoard
         raw["maximumBolus"] = maximumBolus
         raw["minimumBGGuard"] = suspendThreshold?.rawValue
         raw["minimumBolusGuard"] = bolusThreshold?.rawValue
