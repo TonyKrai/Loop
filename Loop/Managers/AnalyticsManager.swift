@@ -127,6 +127,11 @@ final class AnalyticsManager: IdentifiableClass {
         if newValue.retrospectiveCorrectionEnabled != oldValue.retrospectiveCorrectionEnabled {
             logEvent("Retrospective correction enabled change")
         }
+        
+        if newValue.bolusThreshold != oldValue.bolusThreshold {
+            logEvent("Bolus BG Guard change")
+        }
+        
     }
 
     // MARK: - Loop Events

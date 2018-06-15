@@ -25,6 +25,8 @@ struct LoopSettings {
     var bolusThreshold: BolusThreshold? = nil
 
     var retrospectiveCorrectionEnabled = true
+    
+      let absorptionTimeOverrun = 1.8
 }
 
 
