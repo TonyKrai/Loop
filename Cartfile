@@ -1,4 +1,4 @@
-github "kdisimone/LoopKit" "jojo"
+github "ddaniels1/LoopKit" "jojo4Olivia"
 github "kdisimone/CGMBLEKit" "jojo-firefly"
 github "i-schuetz/SwiftCharts" == 0.6.5
 github "kdisimone/dexcom-share-client-swift" "jojo"
