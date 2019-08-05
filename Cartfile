@@ -2,6 +2,6 @@ github "ddaniels1/LoopKit" "jojo4Olivia"
 github "ddaniels1/CGMBLEKit" "jojo-firefly4Olivia"
 github "i-schuetz/SwiftCharts" == 0.6.5
 github "ddaniels1/dexcom-share-client-swift" "jojo4Olivia"
-github "ddaniels1/G4ShareSpy" "Jojo4Olivia"
+github "ddaniels1/G4ShareSpy" "jojo4Olivia"
 github "ddaniels1/rileylink_ios" "jojo-beeps4Olivia"
 github "LoopKit/Amplitude-iOS" "decreepify"
