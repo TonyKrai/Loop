@@ -1189,16 +1189,9 @@ final class StatusTableViewController: ChartsTableViewController {
         }
     }
 
-
-    
     @IBAction func toggleWorkoutMode(_ sender: UIBarButtonItem) {
-      
         if workoutMode == true {
-        
-            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
-            self.view.addGestureRecognizer(longPressGesture)
-            
-    
+            deviceManager.loopManager.settings.clearOverride()
         } else {
             if FeatureFlags.sensitivityOverridesEnabled {
                 performSegue(withIdentifier: OverrideSelectionViewController.className, sender: toolbarItems![6])
@@ -1210,18 +1203,9 @@ final class StatusTableViewController: ChartsTableViewController {
 
                 present(vc, animated: true, completion: nil)
             }
-           
         }
-    
-        
-    }
-    @objc func longPress(sender: AnyObject, forEvent event:UIEvent) {
-        deviceManager.loopManager.settings.clearOverride()
-
-   
     }
 
-    
     // MARK: - HUDs
 
     @IBOutlet var hudView: HUDView? {
