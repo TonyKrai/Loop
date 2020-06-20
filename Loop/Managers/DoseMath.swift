@@ -518,7 +518,7 @@ extension Collection where Element: GlucoseValue {
         guard let correction = self.insulinCorrection(
             to: correctionRange,
             at: date,
-            suspendThreshold: HKQuantity(unit: HKUnit.milligramsPerDeciliter, doubleValue: 70.0),sensitivity: sensitivity.quantity(at: date),
+             suspendThreshold: suspendThreshold ?? correctionRange.quantityRange(at: date).lowerBound, sensitivity: sensitivity.quantity(at: date),
             model: model
         ) else {
             return ManualBolusRecommendation(amount: 0, pendingInsulin: pendingInsulin)
@@ -541,3 +541,4 @@ extension Collection where Element: GlucoseValue {
         return bolus
     }
 }
+
