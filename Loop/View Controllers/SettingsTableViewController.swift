@@ -12,6 +12,7 @@ import LoopKit
 import LoopKitUI
 import LoopCore
 import LoopTestingKit
+import LocalAuthentication
 
 
 final class SettingsTableViewController: UITableViewController {
@@ -20,7 +21,7 @@ final class SettingsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+    
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
 
@@ -34,8 +35,10 @@ final class SettingsTableViewController: UITableViewController {
         super.viewDidAppear(animated)
 
         AnalyticsManager.shared.didDisplaySettingsScreen()
+        
+        self.tableView.reloadData()        
     }
-
+       
     var dataManager: DeviceDataManager!
 
     private lazy var isTestingPumpManager = dataManager.pumpManager is TestingPumpManager
@@ -54,6 +57,7 @@ final class SettingsTableViewController: UITableViewController {
     fileprivate enum LoopRow: Int, CaseCountable {
         case dosing = 0
         case diagnostic
+        case otp
     }
 
     fileprivate enum PumpRow: Int, CaseCountable {
@@ -90,7 +94,7 @@ final class SettingsTableViewController: UITableViewController {
 
         return formatter
     }()
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.destination {
         case let vc as InsulinModelSettingsViewController:
@@ -173,6 +177,14 @@ final class SettingsTableViewController: UITableViewController {
 
                 cell.textLabel?.text = NSLocalizedString("Issue Report", comment: "The title text for the issue report cell")
                 cell.detailTextLabel?.text = nil
+                cell.accessoryType = .disclosureIndicator
+
+                return cell
+            case .otp:
+                let cell = tableView.dequeueReusableCell(withIdentifier: SettingsTableViewCell.className, for: indexPath)
+
+                cell.textLabel?.text = NSLocalizedString("One Time Password", comment: "The title text for the OTP")
+                cell.detailTextLabel?.text = dataManager.loopManager.otpManager.created
                 cell.accessoryType = .disclosureIndicator
 
                 return cell
@@ -563,9 +575,23 @@ final class SettingsTableViewController: UITableViewController {
             case .diagnostic:
                 let vc = CommandResponseViewController.generateDiagnosticReport(deviceManager: dataManager)
                 vc.title = sender?.textLabel?.text
-
                 show(vc, sender: sender)
             case .dosing:
+                break
+            case .otp:
+                let otpAuth = LAContext()
+                otpAuth.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "Access OTP Secret" ) { success, fail in
+                   if success {
+                      DispatchQueue.main.async { [unowned self] in
+                         let vc = OTPSelectionViewController()
+                         vc.otpManager = self.dataManager.loopManager.otpManager
+                         let otpNavController = OTPNavigationController(rootViewController: vc)
+                         otpNavController.modalPresentationStyle = .fullScreen
+                         self.present(otpNavController, animated: true, completion: nil)
+                     }
+                   }
+                }
+                tableView.deselectRow(at: indexPath, animated: true)
                 break
             }
         case .services:
@@ -617,6 +643,7 @@ final class SettingsTableViewController: UITableViewController {
     @objc private func dosingEnabledChanged(_ sender: UISwitch) {
         dataManager.loopManager.settings.dosingEnabled = sender.isOn
     }
+    
 }
 
 // MARK: - DeviceManager view controller delegation
