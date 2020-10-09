@@ -11,7 +11,6 @@ import HealthKit
 import LoopKit
 import LoopCore
 
-
 final class LoopDataManager {
     enum LoopUpdateContext: Int {
         case bolus
@@ -22,7 +21,10 @@ final class LoopDataManager {
     }
 
     static let LoopUpdateContextKey = "com.loudnate.Loop.LoopDataManager.LoopUpdateContext"
-
+    
+    // OTP
+    let otpManager: OTPManager
+    
     let carbStore: CarbStore
 
     let doseStore: DoseStore
@@ -41,7 +43,9 @@ final class LoopDataManager {
             NotificationCenter.default.removeObserver(observer)
         }
     }
+    
 
+    
     init(
         lastLoopCompleted: Date?,
         basalDeliveryState: PumpManagerStatus.BasalDeliveryState?,
@@ -53,6 +57,8 @@ final class LoopDataManager {
         overrideHistory: TemporaryScheduleOverrideHistory = UserDefaults.appGroup?.overrideHistory ?? .init(),
         lastPumpEventsReconciliation: Date?
     ) {
+        self.otpManager = OTPManager()
+        
         self.logger = DiagnosticLogger.shared.forCategory("LoopDataManager")
         self.lockedLastLoopCompleted = Locked(lastLoopCompleted)
         self.lockedBasalDeliveryState = Locked(basalDeliveryState)
@@ -134,6 +140,7 @@ final class LoopDataManager {
         ]
     }
 
+   
     /// Loop-related settings
     ///
     /// These are not thread-safe.
@@ -1486,7 +1493,6 @@ extension LoopDataManager {
     /// - parameter completion: A closure called once the report has been generated. The closure takes a single argument of the report string.
     func generateDiagnosticReport(_ completion: @escaping (_ report: String) -> Void) {
         getLoopState { (manager, state) in
-
             var entries: [String] = [
                 "## LoopDataManager",
                 "settings: \(String(reflecting: manager.settings))",
@@ -1610,3 +1616,4 @@ private extension TemporaryScheduleOverride {
         return abs(basalRateMultiplier - 1.0) >= .ulpOfOne
     }
 }
+
